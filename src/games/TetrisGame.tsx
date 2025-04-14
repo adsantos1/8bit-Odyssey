@@ -202,6 +202,7 @@ const TetrisGame: React.FC = () => {
     color: number;              
   } | null>(null); 
   const [dropInterval, _setDropInterval] = useState(1000); // Added 
+  const [isGameOver, setIsGameOver] = useState(false); // <<< Moved state
   // --- End State ---  
 
   // --- Game Logic Functions ---
@@ -223,6 +224,7 @@ const TetrisGame: React.FC = () => {
     gameRunning.current = false; // Stop the game loop
     // TODO: Display Game Over message to the user
     setPiece(null); // Clear the current piece state maybe? Or leave it to show collision.
+    setIsGameOver(true); // <<< Set state here
     return; // Stop the function here
   }
   // *** End Game Over Check ***
@@ -341,21 +343,8 @@ const TetrisGame: React.FC = () => {
       }
       gameRunning.current = false;
     }
-  }, [gameLoop]); // Dependency: gameLoop
+  }, [gameLoop]); // Dependency: gameLoop  
 
-
-  const [isGameOver, setIsGameOver] = useState(false);
-
-  // *** Update Game Over state when gameRunning changes ***
-  useEffect(() => {
-     // This effect runs whenever gameRunning.current changes
-     // We might need a more robust way if gameRunning is modified elsewhere
-     // but for now, let's check it when the component potentially re-renders
-     // A better way might be to set isGameOver state directly in spawnPiece
-     if (!gameRunning.current && !isGameOver) { // Check if game just stopped
-         setIsGameOver(true);
-     }
-  }, [piece]); // Re-run check when piece changes (becomes null on game over)
 
   // --- End Effects ---
 
