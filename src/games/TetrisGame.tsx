@@ -443,21 +443,35 @@ useEffect(() => {
   // --- End Effects ---
 
   return (
+    // Make sure this container has position: relative in your CSS
     <div className="tetris-container">
-    <canvas
-      ref={canvasRef}
-      width={BOARD_WIDTH}  // Use constant
-      height={BOARD_HEIGHT} // Use constant
-      className="tetris-canvas" // Optional className
-      style={{ border: '1px solid grey' }}       
-    ></canvas>
-    {/* *** Add Game Over Display *** */}
-    {isGameOver && (
-        <div className="game-over-overlay">GAME OVER</div>
+      <canvas
+        ref={canvasRef}
+        width={BOARD_WIDTH}
+        height={BOARD_HEIGHT}
+        className="tetris-canvas"
+        style={{ border: '1px solid grey' }}
+      ></canvas>
+
+      {/* Game Over Display */}
+      {isGameOver && (
+          <div className="game-over-overlay">GAME OVER</div>
       )}
-  </div>
+
+      {/* --- Add On-Screen Controls HERE --- */}
+      {!isGameOver && ( // Optionally hide controls when game is over
+        <div className="on-screen-controls">
+          <button className="control-button left" onClick={() => movePiece(-1)}>←</button>
+          <button className="control-button right" onClick={() => movePiece(1)}>→</button>
+          <button className="control-button rotate" onClick={rotatePiece}>↻</button> {/* Using rotatePiece directly */}
+          <button className="control-button down" onClick={drop}>↓</button>       {/* Using drop directly */}
+        </div>
+      )}
+      {/* --- End On-Screen Controls --- */}
+
+    </div>
   );
-};
+}; // End of TetrisGame component
 
 
 

@@ -21,3 +21,64 @@
       position: relative; /* Needed for absolute positioning of children */
       /* ... other styles ... */
   }
+
+/* --- Add these styles to TetrisGameCSs.txt --- */
+
+/* Container for the on-screen buttons */
+.on-screen-controls {
+    position: absolute; /* Position relative to tetris-container */
+    bottom: 10px;       /* Place controls near the bottom */
+    left: 0;
+    width: 100%;
+    display: flex;      /* Arrange buttons in a row */
+    justify-content: space-around; /* Distribute space between buttons */
+    padding: 0 20px;    /* Add some side padding */
+    box-sizing: border-box; /* Include padding in width calculation */
+    z-index: 5;         /* Ensure controls are above canvas but below overlay */
+  }
+  
+  /* General style for all control buttons */
+  .control-button {
+    /* See-through background */
+    background-color: rgba(255, 255, 255, 0.2); /* White with 20% opacity */
+    border: 1px solid rgba(255, 255, 255, 0.5);  /* Slightly less transparent border */
+    color: rgba(255, 255, 255, 0.8); /* Semi-transparent white text */
+  
+    /* Button appearance */
+    padding: 15px 20px; /* Adjust padding for size */
+    font-size: 1.5rem;  /* Adjust font size */
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer;
+    font-weight: bold;
+    min-width: 60px;   /* Ensure buttons have a minimum width */
+    text-align: center;
+  
+    /* Prevent text selection on rapid clicks */
+    user-select: none;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE10+/Edge */
+  }
+  
+  /* Optional: Style on hover/active for feedback */
+  .control-button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .control-button:active {
+    background-color: rgba(255, 255, 255, 0.4);
+    transform: scale(0.95); /* Slight shrink effect */
+  }
+  
+  /* If you need specific positioning per button, use these classes */
+  /* .control-button.left { ... } */
+  /* .control-button.right { ... } */
+  /* .control-button.rotate { ... } */
+  /* .control-button.down { ... } */
+  
+  
+  /* Ensure the main container is set up for absolute positioning */
+  .tetris-container {
+      position: relative; /* Make sure this is still present */
+      /* ... other existing styles ... */
+  }  
