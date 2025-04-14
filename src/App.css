@@ -1,0 +1,30 @@
+/* src/App.css */
+
+.App {
+  /* You might not need much here if #root in index.css centers things */
+}
+
+.App h1 { /* Style the main title */
+  font-family: var(--font-arcade);
+  color: var(--neon-cyan);
+  font-size: 2.5rem; /* Adjust size as needed */
+  text-shadow: 0 0 5px var(--neon-cyan), 0 0 8px var(--neon-cyan); /* Neon glow */
+  margin-bottom: 2rem; /* Add space below title */
+}
+
+/* Style the container around the canvas - you might need to add this className in TetrisGame.tsx */
+.tetris-container {
+   display: inline-block; /* Allows border/shadow to wrap tightly */
+   border: 2px solid var(--neon-magenta);
+   box-shadow: 0 0 8px 1px var(--neon-magenta); /* Outer glow */
+   padding: 5px; /* Optional space between border and canvas */
+   background-color: #000; /* Ensure container bg is dark if padding */
+}
+
+/* Style the canvas itself (optional - mostly for size/positioning) */
+.tetris-canvas {
+  /* We set width/height directly on the canvas element for drawing resolution */
+  /* Styles here are for layout, border, etc. */
+  display: block; /* Removes extra space below canvas */
+}
+
