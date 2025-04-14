@@ -1,3 +1,5 @@
+the game works but i don't see any controlls:
+
 import { useRef, useEffect, useState, useCallback } from 'react';
 // Optional: import './TetrisGame.css'; // Create this CSS file later if needed
 import './TetrisGame.css'; 
