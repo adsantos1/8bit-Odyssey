@@ -1,5 +1,4 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
-import {  App as CapacitorApp } from '@capacitor/app'; // <<< Import Capacitor App plugin
 // Optional: import './TetrisGame.css'; // Create this CSS file later if needed
 import './TetrisGame.css'; 
 // --- Game Constants ---
@@ -205,7 +204,7 @@ interface TetrisGameProps {
 
 
 
-const TetrisGame: React.FC<TetrisGameProps> = ({ onNextPieceUpdate, onGoBack }) => {
+const TetrisGame: React.FC<TetrisGameProps> = ({ onNextPieceUpdate}) => {
   // --- Refs ---
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const lastDropTime = useRef(0); 
@@ -558,43 +557,6 @@ useEffect(() => {
 // Dependency: The handler function itself. React ensures it's stable if defined with useCallback.
 }, [handleKeyDown]); // <<< Dependency is the handler
 
-
-  // --- Add Effect for Hardware Back Button ---
-// --- Corrected Effect for Hardware Back Button ---
-useEffect(() => {
-  // Declare listenerHandle without explicit type or initial value here
-  let listenerHandle: any = null; // Using 'any' or letting it be inferred later
-
-  const registerBackButtonListener = async () => {
-    try {
-      console.log("TetrisGame: Registering back button listener...");
-      // Assign the awaited result, TS will infer the type
-      listenerHandle = await CapacitorApp.addListener('backButton', (_event) => { // <<< Rename event to _event
-        console.log('Hardware back button pressed');
-        onGoBack();
-      });
-      console.log("TetrisGame: Back button listener registered.");
-    } catch (error) {
-      console.error("Error registering back button listener", error);
-    }
-  };
-
-  registerBackButtonListener();
-
-  // Cleanup function (must be synchronous)
-  return () => {
-    if (listenerHandle) {
-      console.log("TetrisGame: Removing back button listener");
-      listenerHandle.remove(); // Call remove on the resolved handle
-    } else {
-      console.log("TetrisGame: No listener handle to remove or remove called before registration finished.");
-      // Handle cases where cleanup runs before listenerPromise resolves?
-      // This might happen in StrictMode or rapid mounts/unmounts.
-      // A more robust solution might involve tracking registration state.
-      // For now, the check for listenerHandle should prevent errors.
-    }
-  };
-}, [onGoBack]); // Dependency: The callback function from App
 
   // --- End Effects ---
 

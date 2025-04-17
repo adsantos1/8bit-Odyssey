@@ -1,7 +1,8 @@
 // App.tsx (Add Go Back Logic, Keep Preview Logic)
 
-import { useState, useCallback } from 'react'; // Keep useCallback
+import { useState, useCallback, useEffect } from 'react'; // Keep useCallback
 import GameGridScreen from './screens/GameGridScreen';
+import { App as CapacitorApp } from '@capacitor/app';
 // Keep these imports
 import TetrisGame, { PieceData } from './games/TetrisGame';
 import NextPiecePreview from './games/NextPiecePreview';
@@ -31,17 +32,62 @@ function App() {
     setNextPieceData(null); // Also reset preview data when going back
   }, []); // No dependencies needed as setSelectedGameId is stable
 
+   // --- Add Global Back Button Listener Effect ---
+   useEffect(() => {
+    let listenerHandle: any = null;
+
+    const registerBackButtonListener = async () => {
+      try {
+        console.log("App: Registering global back button listener...");
+        listenerHandle = await CapacitorApp.addListener('backButton', (_event) => {
+          console.log('App: Hardware back button pressed');
+
+          // Check the current state to decide action
+          if (selectedGameId !== null) {
+            // If a game is currently selected, go back to the grid
+            console.log('App: Navigating back to game grid from', selectedGameId);
+            setSelectedGameId(null);
+            // Reset preview state if using it
+            // setNextPieceData(null);
+          } else {
+            // If on the game grid (selectedGameId is null), allow default behavior (exit app)
+            // Adding the listener disables default behavior, so we might need to exit explicitly.
+            // Let's try allowing it to exit naturally first. If it doesn't, uncomment the exitApp line.
+            console.log('App: Back button pressed on grid screen, allowing default exit (or call exitApp).');
+            // CapacitorApp.exitApp(); // Uncomment this line ONLY if the app doesn't exit from the grid screen on back press
+          }
+        });
+        console.log("App: Global back button listener registered.");
+      } catch (error) {
+        console.error("App: Error registering global back button listener", error);
+      }
+    };
+
+    registerBackButtonListener();
+
+     // Cleanup function
+     return () => {
+      if (listenerHandle && typeof listenerHandle.remove === 'function') {
+        console.log("App: Removing global back button listener");
+        listenerHandle.remove();
+      } else {
+         console.log("App: Global listener handle not available or remove method missing.");
+      }
+    };
+    // IMPORTANT: We add selectedGameId to dependency array so the logic inside the listener
+    // always has the current value. However, this means the listener is removed/re-added
+    // on every navigation, which is usually fine.
+  }, [selectedGameId]); // <<< Add selectedGameId as dependency
+
   return (
     <div className="App">
-      {/* --- Header Structure (Keep Preview) --- */}
+      {/* --- Header Structure --- */}
       <div className="app-header">
-        <h1 className="header-title">8Bit Odyssey</h1>
-        {/* Keep Preview rendering */}
-        {selectedGameId === 'tetris' && (
-          <div className="header-preview">
-             <NextPiecePreview pieceData={nextPieceData} />
-          </div>
-        )}
+         {/* Keep header content (Title, optional Preview) */}
+         <h1 className="header-title">8Bit Odyssey</h1>
+         {selectedGameId === 'tetris' && (
+           <div className="header-preview"> <NextPiecePreview pieceData={nextPieceData} /> </div>
+         )}
       </div>
       {/* --- End Header Structure --- */}
 
@@ -49,15 +95,16 @@ function App() {
       {selectedGameId === null ? (
         <GameGridScreen onSelectGame={handleSelectGame} />
       ) : selectedGameId === 'tetris' ? (
-        // Pass BOTH callbacks down
+        // Remove the onGoBack prop
         <TetrisGame
-           onNextPieceUpdate={handleNextPieceUpdate} // Keep this
-           onGoBack={handleGoBack} // <<< ADD THIS PROP
-        />
+        onNextPieceUpdate={handleNextPieceUpdate} // Keep this
+        onGoBack={handleGoBack} // <<< ADD THIS PROP
+     />
       ) : (
         <div> {/* Other games placeholder */}
           <p>Selected game: {selectedGameId} (Not implemented yet)</p>
-           <button onClick={handleGoBack}>Back to Grid</button>
+           {/* You might want a button here still, but back button should also work */}
+           <button onClick={() => setSelectedGameId(null)}>Back to Grid (Button)</button>
         </div>
       )}
     </div>
