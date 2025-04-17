@@ -1,40 +1,42 @@
-import { useState, useCallback } from 'react'; // Import useState
-import GameGridScreen from './screens/GameGridScreen'; // Import Grid Screen
-import TetrisGame, { PieceData } from './games/TetrisGame'; // Keep Tetris import
-import NextPiecePreview from './games/NextPiecePreview'; // Import the new component
+// App.tsx (Add Go Back Logic, Keep Preview Logic)
+
+import { useState, useCallback } from 'react'; // Keep useCallback
+import GameGridScreen from './screens/GameGridScreen';
+// Keep these imports
+import TetrisGame, { PieceData } from './games/TetrisGame';
+import NextPiecePreview from './games/NextPiecePreview';
 import './App.css';
 
-function App() {
-  // State to track the currently selected game ID (null means show grid)
-  const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
-   // const [score, setScore] = useState(0); // Score is now local to TetrisGame again
-   const [nextPieceData, setNextPieceData] = useState<PieceData | null>(null); // <<< State for preview data
 
-  // Function passed to GameGridScreen to handle selection
+function App() {
+  const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
+  // Keep preview state
+  const [nextPieceData, setNextPieceData] = useState<PieceData | null>(null);
+
   const handleSelectGame = (gameId: string) => {
-    console.log("Selected game:", gameId); // Log selection
-    setSelectedGameId(gameId); // Update state to show the game
-    setNextPieceData(null); // Reset preview when changing game
+    console.log("Selected game:", gameId);
+    setSelectedGameId(gameId);
+    setNextPieceData(null); // Keep resetting preview on new game
   };
 
-  // --- Callback to receive next piece update ---
+  // Keep preview update callback
   const handleNextPieceUpdate = useCallback((piece: PieceData | null) => {
     setNextPieceData(piece);
-  }, []); // Empty dependency array, setter is stable
+  }, []);
 
-  // Function to go back to the grid (we'll need a button later)
-  // const handleBackToGrid = () => {
-  //   setSelectedGameId(null);
-  // };
+  // --- Add Function to Handle Going Back ---
+  const handleGoBack = useCallback(() => {
+    console.log("Navigating back to game grid via hardware back button");
+    setSelectedGameId(null); // Set state to show the grid screen
+    setNextPieceData(null); // Also reset preview data when going back
+  }, []); // No dependencies needed as setSelectedGameId is stable
 
   return (
     <div className="App">
-      {/* --- Updated Header Structure --- */}
+      {/* --- Header Structure (Keep Preview) --- */}
       <div className="app-header">
-        {/* Title on the Left */}
         <h1 className="header-title">8Bit Odyssey</h1>
-
-        {/* Preview on the Right (only when Tetris is active) */}
+        {/* Keep Preview rendering */}
         {selectedGameId === 'tetris' && (
           <div className="header-preview">
              <NextPiecePreview pieceData={nextPieceData} />
@@ -47,11 +49,15 @@ function App() {
       {selectedGameId === null ? (
         <GameGridScreen onSelectGame={handleSelectGame} />
       ) : selectedGameId === 'tetris' ? (
-        // Pass the new callback down
-        <TetrisGame onNextPieceUpdate={handleNextPieceUpdate} />
+        // Pass BOTH callbacks down
+        <TetrisGame
+           onNextPieceUpdate={handleNextPieceUpdate} // Keep this
+           onGoBack={handleGoBack} // <<< ADD THIS PROP
+        />
       ) : (
         <div> {/* Other games placeholder */}
           <p>Selected game: {selectedGameId} (Not implemented yet)</p>
+           <button onClick={handleGoBack}>Back to Grid</button>
         </div>
       )}
     </div>

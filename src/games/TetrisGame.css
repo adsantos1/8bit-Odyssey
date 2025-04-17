@@ -108,7 +108,7 @@
     left: 10px; /* Position on the left */
     background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
     color: #fff; /* White text */
-    padding: 8px 15px;
+    padding: 8px 12px;
     border-radius: 5px;
     font-family: var(--font-arcade), sans-serif; /* Use arcade font if available */
     font-size: 1.2rem;

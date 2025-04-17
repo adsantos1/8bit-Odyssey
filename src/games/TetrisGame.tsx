@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
+import {  App as CapacitorApp } from '@capacitor/app'; // <<< Import Capacitor App plugin
 // Optional: import './TetrisGame.css'; // Create this CSS file later if needed
 import './TetrisGame.css'; 
 // --- Game Constants ---
@@ -196,9 +197,15 @@ const checkCollision = (
 // --- End Helper Functions ---
 
 
+// --- Define Props Type (Add onGoBack) ---
+interface TetrisGameProps {
+  onNextPieceUpdate: (piece: PieceData | null) => void; // Keep this
+  onGoBack: () => void; // <<< Add this
+}
 
 
-const TetrisGame: React.FC<TetrisGameProps> = ({ onNextPieceUpdate }) => {
+
+const TetrisGame: React.FC<TetrisGameProps> = ({ onNextPieceUpdate, onGoBack }) => {
   // --- Refs ---
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const lastDropTime = useRef(0); 
@@ -231,61 +238,56 @@ const TetrisGame: React.FC<TetrisGameProps> = ({ onNextPieceUpdate }) => {
   // --- Game Logic Functions ---
  // *** Modify spawnPiece ***
  const spawnPiece = useCallback(() => {
-  console.log("spawnPiece called...");
+  console.log("--- spawnPiece Called ---");
 
   // 1. Determine the piece to spawn (should be the current 'nextPiece' state)
-  const pieceToSpawn = nextPiece;
+  const pieceToSpawn = nextPiece; // This came from the *previous* getRandomPiece call
+  console.log("Spawn: pieceToSpawn (based on current nextPiece state):", pieceToSpawn);
 
-  // If 'nextPiece' hasn't been set yet (should only happen if initial effect fails), generate one.
-  // This is a fallback, ideally the initial useEffect handles the first 'nextPiece'.
   if (!pieceToSpawn) {
-      console.error("Spawn called but nextPiece is null!");
-      // Potentially generate one here or handle error, but let's rely on initial effect
-      return; // Exit if no next piece is ready
+      console.error("Spawn: Cannot spawn, nextPiece state is null!");
+      return;
   }
 
-  console.log("Spawning piece based on nextPiece state:", pieceToSpawn);
-
-  // 2. Calculate initial position for the piece to spawn
+  // 2. Calculate initial position
   const initialPos = {
     x: Math.floor(COLS / 2) - Math.floor(pieceToSpawn.tetromino[0].length / 2),
-    y: 0 // Start at the top
+    y: 0
   };
 
   // 3. Create the full object for the piece that will become active
   const newActivePiece = { ...pieceToSpawn, pos: initialPos };
 
-  // 4. Generate the *new* "next" piece that will be shown in the preview
+  // 4. Generate the *new* "next" piece
   const brandNewNextPiece = getRandomPiece();
+  console.log("Spawn: Generated brandNewNextPiece:", brandNewNextPiece);
 
-  // 5. Check for immediate collision (Game Over condition)
+  // 5. Check for collision
   if (checkCollision(newActivePiece, board)) {
-    console.log("GAME OVER - Collision on spawn");
-    gameRunning.current = false; // Stop game loop
-    setIsGameOver(true); // Set game over state
-    // Optional: set piece to the colliding piece to show where it failed
-    // setPiece(newActivePiece);
-    // Clear next piece preview on game over
+    console.log("Spawn: GAME OVER - Collision on spawn");
+    gameRunning.current = false;
+    setIsGameOver(true);
     setNextPiece(null);
-    onNextPieceUpdate(null);
-    return; // Stop the spawn process
+    onNextPieceUpdate(null); // Clear preview on game over
+    console.log("Spawn: Clearing next piece state and preview.");
+    return;
   }
 
-  // 6. No collision - Update the game state:
-  //    - The piece we decided to spawn becomes the active 'piece'
-  setPiece(newActivePiece);
-  //    - The brand new generated piece becomes the 'nextPiece'
-  setNextPiece(brandNewNextPiece);
-  //    - Inform the App about the new next piece for the preview
-  onNextPieceUpdate(brandNewNextPiece);
-  //    - Reset the drop timer for the new active piece
+  // 6. No collision - Update states:
+  setPiece(newActivePiece); // <<< Set active piece state
+  console.log("Spawn: Setting ACTIVE piece state to:", newActivePiece); // <<< Log active piece
+
+  setNextPiece(brandNewNextPiece); // <<< Set next piece state
+  console.log("Spawn: Setting NEXT piece state to:", brandNewNextPiece); // <<< Log next piece state
+
+  onNextPieceUpdate(brandNewNextPiece); // <<< Report to preview
+  console.log("Spawn: Reporting next piece for PREVIEW:", brandNewNextPiece); // <<< Log preview piece
+
   lastDropTime.current = 0;
+  console.log("--- spawnPiece Complete ---");
 
-  console.log("Successfully spawned piece, new next piece:", brandNewNextPiece);
-
-// Dependencies: nextPiece state, getRandomPiece helper, board state (for collision check),
-// onNextPieceUpdate prop, gameRunning ref, setIsGameOver setter.
 }, [nextPiece, getRandomPiece, board, onNextPieceUpdate, setIsGameOver]);
+
 
   const drop = useCallback(() => {
     setPiece(prevPiece => {
@@ -482,11 +484,13 @@ const handleKeyDown = useCallback((event: KeyboardEvent) => {
 
   }, [board, piece]); // Dependencies: board, piece
 
-  // Effect for Initial Spawn
-  useEffect(() => {
-    console.log("Initial setup effect running...");
+ 
+   // Effect for Initial Spawn (Revised for Next Piece Logic + Debugging)
+   useEffect(() => {
+    console.log("--- Initial Setup ---");
     // 1. Generate the very first piece that will be active
     const firstActivePieceData = getRandomPiece();
+    console.log("Initial Setup: Generated firstActivePieceData", firstActivePieceData);
 
     // 2. Calculate its position
     const initialPos = {
@@ -494,30 +498,33 @@ const handleKeyDown = useCallback((event: KeyboardEvent) => {
         y: 0
     };
 
-    // 3. Check for immediate collision (unlikely on empty board, but good practice)
+    // 3. Check for immediate collision
      if (checkCollision({ ...firstActivePieceData, pos: initialPos }, board)) {
          console.error("Immediate Game Over on initial load?");
          setIsGameOver(true);
          gameRunning.current = false;
      } else {
         // 4. Set the first active piece state
-        setPiece({ ...firstActivePieceData, pos: initialPos });
-        console.log("Set initial active piece:", { ...firstActivePieceData, pos: initialPos });
+        const firstActivePieceWithPos = { ...firstActivePieceData, pos: initialPos };
+        setPiece(firstActivePieceWithPos); // <<< Set state
+        console.log("Initial Setup: Setting ACTIVE piece state to:", firstActivePieceWithPos); // <<< Log active piece
      }
 
     // 5. Generate the piece that will be shown as "next" initially
     const firstNextPieceData = getRandomPiece();
+    console.log("Initial Setup: Generated firstNextPieceData", firstNextPieceData);
 
     // 6. Set the 'nextPiece' state
-    setNextPiece(firstNextPieceData);
+    setNextPiece(firstNextPieceData); // <<< Set state
+    console.log("Initial Setup: Setting NEXT piece state to:", firstNextPieceData); // <<< Log next piece state
 
     // 7. Report this first 'next' piece to the App for the preview
-    onNextPieceUpdate(firstNextPieceData);
-    console.log("Set initial next piece:", firstNextPieceData);
+    onNextPieceUpdate(firstNextPieceData); // <<< Report to preview
+    console.log("Initial Setup: Reporting next piece for PREVIEW:", firstNextPieceData); // <<< Log preview piece
 
-    // Dependencies: only need to run once on mount effectively, but dependencies ensure
-    // functions/state setters are available. Added board for checkCollision.
-  }, [getRandomPiece, onNextPieceUpdate, board, setIsGameOver]); // Added board and setIsGameOver
+    console.log("--- Initial Setup Complete ---");
+
+  }, [getRandomPiece, onNextPieceUpdate, board, setIsGameOver]);
 
   
 
@@ -551,6 +558,43 @@ useEffect(() => {
 // Dependency: The handler function itself. React ensures it's stable if defined with useCallback.
 }, [handleKeyDown]); // <<< Dependency is the handler
 
+
+  // --- Add Effect for Hardware Back Button ---
+// --- Corrected Effect for Hardware Back Button ---
+useEffect(() => {
+  // Declare listenerHandle without explicit type or initial value here
+  let listenerHandle: any = null; // Using 'any' or letting it be inferred later
+
+  const registerBackButtonListener = async () => {
+    try {
+      console.log("TetrisGame: Registering back button listener...");
+      // Assign the awaited result, TS will infer the type
+      listenerHandle = await CapacitorApp.addListener('backButton', (_event) => { // <<< Rename event to _event
+        console.log('Hardware back button pressed');
+        onGoBack();
+      });
+      console.log("TetrisGame: Back button listener registered.");
+    } catch (error) {
+      console.error("Error registering back button listener", error);
+    }
+  };
+
+  registerBackButtonListener();
+
+  // Cleanup function (must be synchronous)
+  return () => {
+    if (listenerHandle) {
+      console.log("TetrisGame: Removing back button listener");
+      listenerHandle.remove(); // Call remove on the resolved handle
+    } else {
+      console.log("TetrisGame: No listener handle to remove or remove called before registration finished.");
+      // Handle cases where cleanup runs before listenerPromise resolves?
+      // This might happen in StrictMode or rapid mounts/unmounts.
+      // A more robust solution might involve tracking registration state.
+      // For now, the check for listenerHandle should prevent errors.
+    }
+  };
+}, [onGoBack]); // Dependency: The callback function from App
 
   // --- End Effects ---
 
