@@ -7,6 +7,7 @@ import { App as CapacitorApp } from '@capacitor/app';
 import TetrisGame, { PieceData } from './games/tetris/TetrisGame';
 import NextPiecePreview from './games/tetris/NextPiecePreview';
 import SnakeGame from './games/snake/SnakeGame';
+import CheckersGame from './games/checkers/CheckersGame';
 import Menu from './components/Menu';
 import './App.css';
 
@@ -114,11 +115,10 @@ function App() {
         <div className="header-menu">
           <Menu onMenuItemClick={handleMenuItemClick} />
         </div>
-        {/* Keep header content (Title, optional Preview) */}
-        <h1 className="header-title">
-          {/* This expression checks the state and outputs the correct title string */}
-          {selectedGameId === 'tetris' ? 'Tetris' : selectedGameId === 'snake' ? 'Snake' : '8Bit Odyssey'}
-        </h1>
+        {/* Only show title on home screen */}
+        {!selectedGameId && (
+          <h1 className="header-title">8Bit Odyssey</h1>
+        )}
         {selectedGameId === 'tetris' && (
           <div className="header-preview">
             <NextPiecePreview pieceData={nextPieceData} />
@@ -137,6 +137,8 @@ function App() {
         />
       ) : selectedGameId === 'snake' ? (
         <SnakeGame onGoBack={handleGoBack} />
+      ) : selectedGameId === 'checkers' ? (
+        <CheckersGame onGoBack={handleGoBack} />
       ) : (
         <div>
           <p>Selected game: {selectedGameId} (Not implemented yet)</p>
