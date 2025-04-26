@@ -23,6 +23,13 @@ const POSITION_BONUS = [
   [7, 7, 7, 7, 7, 7, 7, 7]
 ];
 
+// Difficulty settings
+const DIFFICULTY_DEPTHS = {
+  easy: 2,
+  medium: 4,
+  hard: 6
+};
+
 // Evaluate the board state for a given player
 function evaluateBoard(board: (Piece | null)[][], player: Player): number {
   let score = 0;
@@ -148,7 +155,8 @@ function minimax(
 }
 
 // Main function to get AI move
-export function getBestMove(board: (Piece | null)[][]): Move | null {
-  const result = minimax(board, 4, -Infinity, Infinity, true, 'black');
+export function getBestMove(board: (Piece | null)[][], difficulty: 'easy' | 'medium' | 'hard' = 'medium'): Move | null {
+  const depth = DIFFICULTY_DEPTHS[difficulty];
+  const result = minimax(board, depth, -Infinity, Infinity, true, 'black');
   return result.move || null;
 } 

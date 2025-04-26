@@ -15,6 +15,8 @@ import {
 import { getBestMove } from './CheckersAI';
 import './CheckersGame.css';
 
+type Difficulty = 'easy' | 'medium' | 'hard';
+
 interface CheckersGameProps {
   onGoBack: () => void;
 }
@@ -29,6 +31,8 @@ const CheckersGame: React.FC<CheckersGameProps> = ({ onGoBack }) => {
     gameOver: false,
     winner: null
   });
+  const [difficulty, setDifficulty] = useState<Difficulty>('medium');
+  const [showModeDropdown, setShowModeDropdown] = useState(false);
 
   // Effect for AI moves
   useEffect(() => {
@@ -37,7 +41,7 @@ const CheckersGame: React.FC<CheckersGameProps> = ({ onGoBack }) => {
     if (gameState.currentPlayer === 'black' && !gameState.gameOver) {
       // Add a small delay before AI move
       timeoutId = setTimeout(() => {
-        const aiMove = getBestMove(gameState.board);
+        const aiMove = getBestMove(gameState.board, difficulty);
         if (aiMove) {
           makeMove(aiMove.to, aiMove.from);
         }
@@ -49,7 +53,7 @@ const CheckersGame: React.FC<CheckersGameProps> = ({ onGoBack }) => {
         clearTimeout(timeoutId);
       }
     };
-  }, [gameState.currentPlayer, gameState.gameOver]);
+  }, [gameState.currentPlayer, gameState.gameOver, difficulty]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -174,6 +178,13 @@ const CheckersGame: React.FC<CheckersGameProps> = ({ onGoBack }) => {
     });
   };
 
+  const handleDifficultyChange = (newDifficulty: Difficulty) => {
+    setDifficulty(newDifficulty);
+    setShowModeDropdown(false);
+    // Optional: Reset the game when difficulty changes
+    resetGame();
+  };
+
   return (
     <div className="checkers-game">
       <h1 className="game-title">Checkers</h1>
@@ -200,6 +211,36 @@ const CheckersGame: React.FC<CheckersGameProps> = ({ onGoBack }) => {
           className="game-canvas"
           onClick={handleClick}
         />
+        <div className="mode-selector">
+          <button 
+            className="mode-button"
+            onClick={() => setShowModeDropdown(!showModeDropdown)}
+          >
+            Mode: {difficulty}
+          </button>
+          {showModeDropdown && (
+            <div className="mode-dropdown">
+              <div 
+                className="mode-option"
+                onClick={() => handleDifficultyChange('easy')}
+              >
+                Easy
+              </div>
+              <div 
+                className="mode-option"
+                onClick={() => handleDifficultyChange('medium')}
+              >
+                Medium
+              </div>
+              <div 
+                className="mode-option"
+                onClick={() => handleDifficultyChange('hard')}
+              >
+                Hard
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
