@@ -1,139 +1,116 @@
 /* src/games/TetrisGame.css or potentially App.css if you prefer */
 .game-over-overlay {
-    position: absolute; /* Position over the canvas */
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.75); /* Semi-transparent black */
-    color: var(--neon-magenta); /* Red */
-    font-family: var(--font-arcade); /* Use arcade font */
-    font-size: 2.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-shadow: 0 0 5px var(--neon-magenta), 0 0 10px var(--neon-magenta);
-    z-index: 10; /* Ensure it's above the canvas */
-  }
-  
-  /* Make sure the container allows absolute positioning */
-  .tetris-container {
-      position: relative; /* Needed for absolute positioning of children */
-      overflow: visible;
-      padding: 0 70px;
-  }
+  position: absolute; /* Position over the canvas */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75); /* Semi-transparent black */
+  color: #ff0000; /* Red */
+  font-family: var(--font-arcade); /* Use arcade font */
+  font-size: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000;
+  z-index: 10; /* Ensure it's above the canvas */
+}
+
+/* Make sure the container allows absolute positioning */
+.tetris-container {
+    position: relative; /* Needed for absolute positioning of children */
+    /* ... other styles ... */
+}
 
 /* --- Add these styles to TetrisGameCSs.txt --- */
 
 .control-button {
-    /* Core Positioning */
-    position: absolute; /* Position relative to tetris-container */
-    top: 75%;           /* Move controls up (roughly 3/4 down the container) - adjust as needed */
-    transform: translateY(-50%); /* Vertically center buttons relative to the 'top: 75%' line */
-  
-    /* See-through Light Blue */
-    /* Base color: lightskyblue (#87CEEB) or adjust as preferred */
-    background-color: transparent;
-    border: 2px solid var(--neon-cyan);
-    color: var(--neon-cyan);
-  
-    /* Button appearance (can keep most from before) */
-    padding: 15px;      /* Adjust padding - maybe make slightly smaller */
-    font-size: 1.5rem;  /* Adjust font size */
-    border-radius: 50%; /* Make buttons circular */
-    cursor: pointer;
-    font-weight: bold;
-    min-width: 55px;    /* Ensure buttons have a minimum width */
-    min-height: 55px;   /* Ensure buttons have a minimum height */
-    text-align: center;
-    line-height: 1;     /* Adjust line height for better vertical text centering in circle */
-    display: flex;      /* Use flex to center content */
-    justify-content: center;
-    align-items: center;
-  
-    /* Prevent text selection */
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-  
-    z-index: 5; /* Ensure controls are above canvas but below overlay */
-    transition: all 0.3s ease;
-  }
-  
-  /* Specific Positions */
-  
-  /* Left Side Buttons */
-  .control-button.left {
-    left: -30px; /* Place outside left edge. Adjust value as needed */
-    /* You might need values like 5px if -30px is too far */
-  }
-  .control-button.right {
-     /* Position slightly to the right of the 'left' button */
-    left: 40px; /* Adjust gap as needed */
-  }
-  
-  /* Right Side Buttons */
-  .control-button.rotate {
-     /* Position near the right edge, leaving space for 'down' */
-    right: 40px; /* Adjust gap as needed */
-  }
-  .control-button.down {
-    right: -30px; /* Place outside right edge. Adjust value as needed */
-     /* You might need values like 5px if -30px is too far */
-  }
-  
-  
-  /* Optional: Style on hover/active for feedback */
-  .control-button:hover {
-    box-shadow: 0 0 10px var(--neon-cyan);
-  }
-  
-  .control-button:active {
-    transform: translateY(-50%) scale(0.95);
-    box-shadow: 0 0 15px var(--neon-cyan);
-  }
-  
-  /* Ensure the main container is set up for absolute positioning */
-  .tetris-container {
-      position: relative; /* Make sure this is still present */
-      /* You might want to add overflow: visible; if buttons are clipped */
-      /* overflow: visible; */
-      /* You might need some padding if buttons outside push layout */
-      /* padding: 0 70px; */ /* Example: Add padding to accommodate buttons */
-  }
+  /* Core Positioning */
+  position: absolute; /* Position relative to tetris-container */
+  top: 75%;           /* Move controls up (roughly 3/4 down the container) - adjust as needed */
+  transform: translateY(-50%); /* Vertically center buttons relative to the 'top: 75%' line */
+
+  /* See-through Light Blue */
+  /* Base color: lightskyblue (#87CEEB) or adjust as preferred */
+  background-color: rgba(135, 206, 235, 0.3); /* Light blue with 30% opacity */
+  border: 1px solid rgba(135, 206, 235, 0.6);  /* Slightly less transparent border */
+  color: rgba(220, 240, 255, 0.9); /* Very light blue/white text, mostly opaque */
+
+  /* Button appearance (can keep most from before) */
+  padding: 15px;      /* Adjust padding - maybe make slightly smaller */
+  font-size: 1.5rem;  /* Adjust font size */
+  border-radius: 50%; /* Make buttons circular */
+  cursor: pointer;
+  font-weight: bold;
+  min-width: 55px;    /* Ensure buttons have a minimum width */
+  min-height: 55px;   /* Ensure buttons have a minimum height */
+  text-align: center;
+  line-height: 1;     /* Adjust line height for better vertical text centering in circle */
+  display: flex;      /* Use flex to center content */
+  justify-content: center;
+  align-items: center;
+
+  /* Prevent text selection */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+
+  z-index: 5; /* Ensure controls are above canvas but below overlay */
+}
+
+/* Specific Positions */
+
+/* Left Side Buttons */
+.control-button.left {
+  left: -30px; /* Place outside left edge. Adjust value as needed */
+  /* You might need values like 5px if -30px is too far */
+}
+.control-button.right {
+   /* Position slightly to the right of the 'left' button */
+  left: 40px; /* Adjust gap as needed */
+}
+
+/* Right Side Buttons */
+.control-button.rotate {
+   /* Position near the right edge, leaving space for 'down' */
+  right: 40px; /* Adjust gap as needed */
+}
+.control-button.down {
+  right: -30px; /* Place outside right edge. Adjust value as needed */
+   /* You might need values like 5px if -30px is too far */
+}
+
+
+/* Optional: Style on hover/active for feedback */
+.control-button:hover {
+  background-color: rgba(135, 206, 235, 0.45); /* Slightly more opaque on hover */
+}
+
+.control-button:active {
+  background-color: rgba(135, 206, 235, 0.6); /* Even more opaque on press */
+  transform: translateY(-50%) scale(0.95); /* Keep vertical centering, add shrink effect */
+}
+
+/* Ensure the main container is set up for absolute positioning */
+.tetris-container {
+    position: relative; /* Make sure this is still present */
+    /* You might want to add overflow: visible; if buttons are clipped */
+    /* overflow: visible; */
+    /* You might need some padding if buttons outside push layout */
+    /* padding: 0 70px; */ /* Example: Add padding to accommodate buttons */
+}
 
 /* --- Add styles for temporary score display --- */
 .score-display {
-    position: absolute;
-    top: 10px;  /* Position near the top */
-    right: 10px; /* Position on the right */
-    background-color: transparent;
-    border: 2px solid var(--neon-cyan);
-    color: var(--neon-cyan);
-    padding: 8px 12px;
-    border-radius: 5px;
-    font-family: var(--font-arcade);
-    font-size: 1.2rem;
-    z-index: 5; /* Keep it above canvas, below overlay */
-    text-shadow: 0 0 5px var(--neon-cyan);
-  }
-
-/* Back button styling consistent with Snake game */
-.back-button {
-  background: transparent;
-  border: 2px solid var(--neon-magenta);
-  color: var(--neon-magenta);
-  padding: 10px 20px;
-  cursor: pointer;
-  font-family: var(--font-arcade);
   position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 10;
-  transition: all 0.3s ease;
-}
-
-.back-button:hover {
-  box-shadow: 0 0 10px var(--neon-magenta);
+  top: 10px;  /* Position near the top */
+  left: 10px; /* Position on the left */
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  color: #fff; /* White text */
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-family: var(--font-arcade), sans-serif; /* Use arcade font if available */
+  font-size: 1.2rem;
+  z-index: 5; /* Keep it above canvas, below overlay */
 }
