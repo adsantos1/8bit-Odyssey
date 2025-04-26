@@ -1,0 +1,120 @@
+.snake-game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  gap: 20px;
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 10px;
+}
+
+.back-button {
+    background: transparent;
+    border: 2px solid var(--neon-magenta);
+    color: var(--neon-magenta);
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: var(--font-arcade);
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  box-shadow: 0 0 8px var(--neon-magenta);
+}
+
+.score {
+  color: var(--neon-cyan);
+  font-family: var(--font-arcade);
+  font-size: 1.2rem;
+  text-shadow: 0 0 5px var(--neon-cyan);
+}
+
+.game-container {
+  position: relative;
+  border: 2px solid var(--neon-cyan);
+  box-shadow: 0 0 8px var(--neon-cyan);
+  background-color: #000;
+  padding: 2px;
+}
+
+.game-canvas {
+  display: block;
+  background-color: #000;
+}
+
+.game-over {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.9);
+  padding: 20px;
+  border: 2px solid var(--neon-magenta);
+  box-shadow: 0 0 8px var(--neon-magenta);
+  text-align: center;
+  color: var(--neon-magenta);
+  font-family: var(--font-arcade);
+}
+
+.game-over button {
+  background: transparent;
+  border: 2px solid var(--neon-magenta);
+  color: var(--neon-magenta);
+  padding: 10px 20px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-family: var(--font-arcade);
+  transition: all 0.3s ease;
+}
+
+.game-over button:hover {
+  box-shadow: 0 0 8px var(--neon-magenta);
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* it was 8px before */
+  align-items: center;
+  margin-top: 10px;
+}
+
+.controls-row {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.controls-row:last-child {
+  margin-top: -4px;
+}
+
+.control-btn {
+  background: transparent;
+  border: 2px solid var(--neon-cyan);
+  color: var(--neon-cyan);
+  padding: 12px 24px;
+  cursor: pointer;
+  font-family: var(--font-arcade);
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  min-width: 80px;
+}
+
+.control-btn:hover {
+  box-shadow: 0 0 8px var(--neon-cyan);
+}
+
+.control-btn.active {
+  background-color: var(--neon-cyan);
+  color: #000;
+  box-shadow: 0 0 12px var(--neon-cyan);
+} 

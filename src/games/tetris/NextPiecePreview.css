@@ -1,0 +1,12 @@
+/* src/games/NextPiecePreview.css */
+.next-piece-container {
+    border: 1px solid var(--neon-cyan); /* Match theme */
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.3); /* Dark semi-transparent */
+    display: inline-block; /* Shrink wrap the canvas */
+    box-shadow: 0 0 5px 0px var(--neon-cyan);
+  }
+  
+  .next-piece-canvas {
+    display: block; /* Prevent extra space */
+  }

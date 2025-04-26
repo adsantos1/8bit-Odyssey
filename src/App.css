@@ -9,22 +9,71 @@
   color: var(--neon-cyan);
   font-size: 2.5rem; /* Adjust size as needed */
   text-shadow: 0 0 5px var(--neon-cyan), 0 0 8px var(--neon-cyan); /* Neon glow */
-  margin-bottom: 2rem; /* Add space below title */
+  margin-bottom: 1rem; /* Add space below title */
 }
 
-/* Style the container around the canvas - you might need to add this className in TetrisGame.tsx */
+/* Updated Header Styles */
+.app-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  margin-bottom: 5px;
+  min-height: 70px; /* Adjust as needed */
+  position: relative;
+}
+
+/* Menu styles */
+.header-menu {
+  position: fixed; /* Changed to fixed to keep it in place */
+  left: 15px;
+  top: 60px;
+  transform: none; /* Remove transform */
+  z-index: 1001; /* Ensure menu stays on top */
+}
+
+/* Default Title Styles (Centered) */
+.header-title {
+  text-align: center;
+  font-size: 2.0rem;
+  margin: 0;
+  color: var(--neon-cyan);
+  text-shadow: 0 0 5px var(--neon-cyan), 0 0 8px var(--neon-cyan);
+}
+
+.app-header.tetris-active-header {
+  justify-content: center; /* Center the title */
+}
+
+.app-header.tetris-active-header .header-title {
+  font-size: 1.4rem;
+  text-align: center;
+  margin: 0;
+}
+
+.app-header.tetris-active-header .header-preview {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.header-preview {
+  margin-bottom: 5px;
+  padding-right: 5px;
+}
+
+/* Style the container around the canvas */
 .tetris-container {
-   display: inline-block; /* Allows border/shadow to wrap tightly */
-   border: 2px solid var(--neon-magenta);
-   box-shadow: 0 0 8px 1px var(--neon-magenta); /* Outer glow */
-   padding: 5px; /* Optional space between border and canvas */
-   background-color: #000; /* Ensure container bg is dark if padding */
+  display: inline-block;
+  border: 2px solid var(--neon-magenta);
+  box-shadow: 0 0 8px 1px var(--neon-magenta);
+  padding: 5px;
+  background-color: #000;
 }
 
-/* Style the canvas itself (optional - mostly for size/positioning) */
+/* Style the canvas itself */
 .tetris-canvas {
-  /* We set width/height directly on the canvas element for drawing resolution */
-  /* Styles here are for layout, border, etc. */
-  display: block; /* Removes extra space below canvas */
+  display: block;
 }
 

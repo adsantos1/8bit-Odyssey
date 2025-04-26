@@ -1,0 +1,62 @@
+.menu-container {
+  position: relative;
+  z-index: 1000;
+}
+
+.menu-toggle {
+  background: transparent;
+  border: 2px solid var(--neon-cyan);
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  box-shadow: 0 0 5px var(--neon-cyan);
+}
+
+.hamburger-icon {
+  width: 14px;
+  height: 12px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hamburger-icon span {
+  display: block;
+  height: 1.5px;
+  width: 100%;
+  background-color: var(--neon-cyan);
+  box-shadow: 0 0 5px var(--neon-cyan);
+  transition: all 0.3s ease;
+}
+
+.menu-dropdown {
+  position: fixed;
+  top: 105px; /* Position below the toggle button */
+  left: 15px;
+  background-color: rgba(0, 0, 0, 0.95);
+  border: 2px solid var(--neon-cyan);
+  box-shadow: 0 0 8px var(--neon-cyan);
+  min-width: 180px;
+  padding: 8px 0;
+  z-index: 1001;
+}
+
+.menu-item {
+  padding: 12px 20px;
+  color: var(--neon-cyan);
+  cursor: pointer;
+  font-family: var(--font-arcade);
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+}
+
+.menu-item:hover {
+  background-color: rgba(0, 255, 255, 0.1);
+  text-shadow: 0 0 5px var(--neon-cyan);
+} 
