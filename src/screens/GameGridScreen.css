@@ -1,7 +1,7 @@
 /* src/screens/GameGridScreen.css */
 
 .game-grid-container {
-    padding: 20px;
+    padding: 40px 20px 20px 20px; /* Top, right, bottom, left */
   }
   
   .game-grid-container h2 {
@@ -10,6 +10,7 @@
     font-size: 1.8rem;
     text-shadow: 0 0 5px var(--neon-magenta);
     margin-bottom: 1.5rem;
+    margin-top: 24px; /* or padding-top: 24px; */
   }
   
   .game-grid {

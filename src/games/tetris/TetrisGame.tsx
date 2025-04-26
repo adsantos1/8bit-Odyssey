@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 // Optional: import './TetrisGame.css'; // Create this CSS file later if needed
 import './TetrisGame.css'; 
+import NextPiecePreview from './NextPiecePreview';
 // --- Game Constants ---
 const COLS = 10; // Standard Tetris width
 const ROWS = 20; // Standard Tetris height
@@ -100,7 +101,8 @@ interface TetrisGameProps {
   // onLineClear: (linesCleared: number) => void; // Keep commented if score is local again
 
   // NEW: Callback to update App with the next piece
-  onNextPieceUpdate: (piece: PieceData | null) => void;
+  onNextPieceUpdate?: (piece: PieceData | null) => void; // Make optional
+  onGoBack: () => void; // <<< Add this
 }
 
   // --- Drawing Function ---
@@ -198,13 +200,13 @@ const checkCollision = (
 
 // --- Define Props Type (Add onGoBack) ---
 interface TetrisGameProps {
-  onNextPieceUpdate: (piece: PieceData | null) => void; // Keep this
+  onNextPieceUpdate?: (piece: PieceData | null) => void; // Keep this
   onGoBack: () => void; // <<< Add this
 }
 
 
 
-const TetrisGame: React.FC<TetrisGameProps> = ({ onNextPieceUpdate}) => {
+const TetrisGame: React.FC<TetrisGameProps> = ({ onNextPieceUpdate }) => {
   // --- Refs ---
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const lastDropTime = useRef(0); 
@@ -267,7 +269,7 @@ const TetrisGame: React.FC<TetrisGameProps> = ({ onNextPieceUpdate}) => {
     gameRunning.current = false;
     setIsGameOver(true);
     setNextPiece(null);
-    onNextPieceUpdate(null); // Clear preview on game over
+    onNextPieceUpdate?.(null); // Clear preview on game over
     console.log("Spawn: Clearing next piece state and preview.");
     return;
   }
@@ -279,7 +281,7 @@ const TetrisGame: React.FC<TetrisGameProps> = ({ onNextPieceUpdate}) => {
   setNextPiece(brandNewNextPiece); // <<< Set next piece state
   console.log("Spawn: Setting NEXT piece state to:", brandNewNextPiece); // <<< Log next piece state
 
-  onNextPieceUpdate(brandNewNextPiece); // <<< Report to preview
+  onNextPieceUpdate?.(brandNewNextPiece); // <<< Report to preview
   console.log("Spawn: Reporting next piece for PREVIEW:", brandNewNextPiece); // <<< Log preview piece
 
   lastDropTime.current = 0;
@@ -518,7 +520,7 @@ const handleKeyDown = useCallback((event: KeyboardEvent) => {
     console.log("Initial Setup: Setting NEXT piece state to:", firstNextPieceData); // <<< Log next piece state
 
     // 7. Report this first 'next' piece to the App for the preview
-    onNextPieceUpdate(firstNextPieceData); // <<< Report to preview
+    onNextPieceUpdate?.(firstNextPieceData); // <<< Report to preview
     console.log("Initial Setup: Reporting next piece for PREVIEW:", firstNextPieceData); // <<< Log preview piece
 
     console.log("--- Initial Setup Complete ---");
@@ -561,37 +563,43 @@ useEffect(() => {
   // --- End Effects ---
 
   return (
-    // Make sure this container has position: relative in your CSS
-    <div className="tetris-container">
-      {/* --- Add Score Display HERE (Temporary) --- */}
-      <div className="score-display">
-        Score: {score}
-      </div>
-      {/* --- End Score Display --- */}
-      <canvas
-        ref={canvasRef}
-        width={BOARD_WIDTH}
-        height={BOARD_HEIGHT}
-        className="tetris-canvas"
-        style={{ border: '1px solid grey' }}
-      ></canvas>
-
-      {/* Game Over Display */}
-      {isGameOver && (
-          <div className="game-over-overlay">GAME OVER</div>
-      )}
-
-      {/* --- Add On-Screen Controls HERE --- */}
-      {!isGameOver && ( // Optionally hide controls when game is over
-        <div className="on-screen-controls">
-          <button className="control-button left" onClick={() => movePiece(-1)}>←</button>
-          <button className="control-button right" onClick={() => movePiece(1)}>→</button>
-          <button className="control-button rotate" onClick={rotatePiece}>↻</button> {/* Using rotatePiece directly */}
-          <button className="control-button down" onClick={drop}>↓</button>       {/* Using drop directly */}
+    <div className="tetris-center-wrapper">
+      <div className="tetris-vertical-stack">
+        <div className="tetris-header-row">
+          <div className="tetris-title">Tetris</div>
+          <NextPiecePreview pieceData={nextPiece} />
         </div>
-      )}
-      {/* --- End On-Screen Controls --- */}
+        <div className="tetris-container">
+          {/* --- Add Score Display HERE (Temporary) --- */}
+          <div className="score-display">
+            Score: {score}
+          </div>
+          {/* --- End Score Display --- */}
+          <canvas
+            ref={canvasRef}
+            width={BOARD_WIDTH}
+            height={BOARD_HEIGHT}
+            className="tetris-canvas"
+            style={{ border: '1px solid grey' }}
+          ></canvas>
 
+          {/* Game Over Display */}
+          {isGameOver && (
+              <div className="game-over-overlay">GAME OVER</div>
+          )}
+
+          {/* --- Add On-Screen Controls HERE --- */}
+          {!isGameOver && ( // Optionally hide controls when game is over
+            <div className="on-screen-controls">
+              <button className="control-button left" onClick={() => movePiece(-1)}>←</button>
+              <button className="control-button right" onClick={() => movePiece(1)}>→</button>
+              <button className="control-button rotate" onClick={rotatePiece}>↻</button> {/* Using rotatePiece directly */}
+              <button className="control-button down" onClick={drop}>↓</button>       {/* Using drop directly */}
+            </div>
+          )}
+          {/* --- End On-Screen Controls --- */}
+        </div>
+      </div>
     </div>
   );
 }; // End of TetrisGame component

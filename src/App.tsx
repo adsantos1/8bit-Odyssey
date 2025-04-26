@@ -2,10 +2,10 @@
 
 import { useState, useCallback, useEffect } from 'react'; // Keep useCallback
 import GameGridScreen from './screens/GameGridScreen';
+import ModernGamesScreen from './screens/ModernGamesScreen';
 import { App as CapacitorApp } from '@capacitor/app';
 // Keep these imports
-import TetrisGame, { PieceData } from './games/tetris/TetrisGame';
-import NextPiecePreview from './games/tetris/NextPiecePreview';
+import TetrisGame from './games/tetris/TetrisGame';
 import SnakeGame from './games/snake/SnakeGame';
 import CheckersGame from './games/checkers/CheckersGame';
 import Menu from './components/Menu';
@@ -13,30 +13,24 @@ import './App.css';
 
 function App() {
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
-  // Keep preview state
-  const [nextPieceData, setNextPieceData] = useState<PieceData | null>(null);
+  const [currentScreen, setCurrentScreen] = useState<'retro' | 'modern'>('retro');
 
   const handleSelectGame = (gameId: string) => {
     console.log("Selected game:", gameId);
     setSelectedGameId(gameId);
-    setNextPieceData(null); // Keep resetting preview on new game
   };
-
-  // Keep preview update callback
-  const handleNextPieceUpdate = useCallback((piece: PieceData | null) => {
-    setNextPieceData(piece);
-  }, []);
 
   // Handle menu item clicks
   const handleMenuItemClick = (item: string) => {
     console.log("Menu item clicked:", item);
-    // Add menu item handling logic here
     switch (item) {
       case 'Home':
-        // Handle Home
+        setSelectedGameId(null); // Return to game grid screen
+        setCurrentScreen('retro');
         break;
       case 'Modern Games':
-        // Handle Modern Games
+        setSelectedGameId(null);
+        setCurrentScreen('modern');
         break;
       case 'Phantom Files':
         // Handle Phantom Files
@@ -57,7 +51,6 @@ function App() {
   const handleGoBack = useCallback(() => {
     console.log("Navigating back to game grid via hardware back button");
     setSelectedGameId(null); // Set state to show the grid screen
-    setNextPieceData(null); // Also reset preview data when going back
   }, []); // No dependencies needed as setSelectedGameId is stable
 
   // --- Add Global Back Button Listener Effect ---
@@ -75,14 +68,12 @@ function App() {
             // If a game is currently selected, go back to the grid
             console.log('App: Navigating back to game grid from', selectedGameId);
             setSelectedGameId(null);
-            // Reset preview state if using it
-            // setNextPieceData(null);
+          } else if (currentScreen === 'modern') {
+            // If on modern games screen, go back to retro screen
+            setCurrentScreen('retro');
           } else {
             // If on the game grid (selectedGameId is null), allow default behavior (exit app)
-            // Adding the listener disables default behavior, so we might need to exit explicitly.
-            // Let's try allowing it to exit naturally first. If it doesn't, uncomment the exitApp line.
             console.log('App: Back button pressed on grid screen, allowing default exit (or call exitApp).');
-            // CapacitorApp.exitApp(); // Uncomment this line ONLY if the app doesn't exit from the grid screen on back press
           }
         });
         console.log("App: Global back button listener registered.");
@@ -102,10 +93,7 @@ function App() {
         console.log("App: Global listener handle not available or remove method missing.");
       }
     };
-    // IMPORTANT: We add selectedGameId to dependency array so the logic inside the listener
-    // always has the current value. However, this means the listener is removed/re-added
-    // on every navigation, which is usually fine.
-  }, [selectedGameId]); // <<< Add selectedGameId as dependency
+  }, [selectedGameId, currentScreen]); // Add currentScreen to dependencies
 
   return (
     <div className="App">
@@ -115,24 +103,24 @@ function App() {
         <div className="header-menu">
           <Menu onMenuItemClick={handleMenuItemClick} />
         </div>
-        {/* Only show title on home screen */}
+        {/* Only show title on home screens */}
         {!selectedGameId && (
-          <h1 className="header-title">8Bit Odyssey</h1>
-        )}
-        {selectedGameId === 'tetris' && (
-          <div className="header-preview">
-            <NextPiecePreview pieceData={nextPieceData} />
-          </div>
+          <h1 className="header-title">
+            {currentScreen === 'retro' ? '8Bit Odyssey' : 'Modern Games'}
+          </h1>
         )}
       </div>
       {/* --- End Header Structure --- */}
 
       {/* Conditional Rendering */}
       {selectedGameId === null ? (
-        <GameGridScreen onSelectGame={handleSelectGame} />
+        currentScreen === 'retro' ? (
+          <GameGridScreen onSelectGame={handleSelectGame} />
+        ) : (
+          <ModernGamesScreen onSelectGame={handleSelectGame} />
+        )
       ) : selectedGameId === 'tetris' ? (
         <TetrisGame
-          onNextPieceUpdate={handleNextPieceUpdate}
           onGoBack={handleGoBack}
         />
       ) : selectedGameId === 'snake' ? (

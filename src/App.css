@@ -36,7 +36,8 @@
 .header-title {
   text-align: center;
   font-size: 2.0rem;
-  margin: 0;
+  /* margin: 0; original*/
+  margin-top: 65px;
   color: var(--neon-cyan);
   text-shadow: 0 0 5px var(--neon-cyan), 0 0 8px var(--neon-cyan);
 }
