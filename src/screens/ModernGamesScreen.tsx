@@ -11,7 +11,7 @@ const ModernGamesScreen: React.FC<ModernGamesScreenProps> = ({ onSelectGame }) =
       id: 'legendary-wave',
       name: 'Legendary Wave',
       description: 'An epic surfing adventure with stunning visuals and challenging gameplay.',
-      free: false
+      free: true
     }
   ];
 
@@ -21,8 +21,8 @@ const ModernGamesScreen: React.FC<ModernGamesScreenProps> = ({ onSelectGame }) =
         {games.map((game) => (
           <div
             key={game.id}
-            className={`game-tile ${!game.free ? 'locked' : ''}`}
-            onClick={() => game.free && onSelectGame(game.id)}
+            className={`game-tile`}
+            onClick={() => onSelectGame(game.id)}
             role="button"
             tabIndex={0}
           >
@@ -30,7 +30,6 @@ const ModernGamesScreen: React.FC<ModernGamesScreenProps> = ({ onSelectGame }) =
               🎮
             </div>
             <span className="game-tile-name">{game.name}</span>
-            {!game.free && <div className="lock-icon">🔒</div>}
           </div>
         ))}
       </div>
