@@ -194,59 +194,61 @@ const SnakeGame: React.FC<SnakeGameProps> = ({ onGoBack }) => {
   };
 
   return (
-    <div className="snake-game">
-      <div className="game-header">
-        <button className="back-button" onClick={onGoBack}>
-          Back
-        </button>
-        <div className="score">Score: {score}</div>
-      </div>
+    <div className="snake-center-wrapper">
+      <div className="snake-game">
+        <div className="game-header">
+          <button className="back-button" onClick={onGoBack}>
+            Back
+          </button>
+          <div className="score">Score: {score}</div>
+        </div>
 
-      <div className="game-container">
-        <canvas
-          ref={canvasRef}
-          width={GRID_SIZE * CELL_SIZE}
-          height={GRID_SIZE * CELL_SIZE}
-          className="game-canvas"
-        />
-        {gameOver && (
-          <div className="game-over">
-            <p>Game Over! Score: {score}</p>
-            <button onClick={resetGame}>Play Again</button>
+        <div className="game-container">
+          <canvas
+            ref={canvasRef}
+            width={GRID_SIZE * CELL_SIZE}
+            height={GRID_SIZE * CELL_SIZE}
+            className="game-canvas"
+          />
+          {gameOver && (
+            <div className="game-over">
+              <p>Game Over! Score: {score}</p>
+              <button onClick={resetGame}>Play Again</button>
+            </div>
+          )}
+        </div>
+        
+        <div className="controls">
+          <div className="controls-row">
+            <button
+              className={`control-btn ${activeButton === 'UP' ? 'active' : ''}`}
+              onClick={() => handleButtonPress('UP')}
+            >
+              Up
+            </button>
           </div>
-        )}
-      </div>
-      
-      <div className="controls">
-        <div className="controls-row">
-          <button
-            className={`control-btn ${activeButton === 'UP' ? 'active' : ''}`}
-            onClick={() => handleButtonPress('UP')}
-          >
-            Up
-          </button>
-        </div>
-        <div className="controls-row">
-          <button
-            className={`control-btn ${activeButton === 'LEFT' ? 'active' : ''}`}
-            onClick={() => handleButtonPress('LEFT')}
-          >
-            Left
-          </button>
-          <button
-            className={`control-btn ${activeButton === 'RIGHT' ? 'active' : ''}`}
-            onClick={() => handleButtonPress('RIGHT')}
-          >
-            Right
-          </button>
-        </div>
-        <div className="controls-row">
-          <button
-            className={`control-btn ${activeButton === 'DOWN' ? 'active' : ''}`}
-            onClick={() => handleButtonPress('DOWN')}
-          >
-            Down
-          </button>
+          <div className="controls-row">
+            <button
+              className={`control-btn ${activeButton === 'LEFT' ? 'active' : ''}`}
+              onClick={() => handleButtonPress('LEFT')}
+            >
+              Left
+            </button>
+            <button
+              className={`control-btn ${activeButton === 'RIGHT' ? 'active' : ''}`}
+              onClick={() => handleButtonPress('RIGHT')}
+            >
+              Right
+            </button>
+          </div>
+          <div className="controls-row">
+            <button
+              className={`control-btn ${activeButton === 'DOWN' ? 'active' : ''}`}
+              onClick={() => handleButtonPress('DOWN')}
+            >
+              Down
+            </button>
+          </div>
         </div>
       </div>
     </div>
