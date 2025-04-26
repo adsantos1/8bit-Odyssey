@@ -12,6 +12,7 @@ import {
   getValidMoves,
   shouldPromoteToKing
 } from './CheckersLogic';
+import { getBestMove } from './CheckersAI';
 import './CheckersGame.css';
 
 interface CheckersGameProps {
@@ -22,12 +23,33 @@ const CheckersGame: React.FC<CheckersGameProps> = ({ onGoBack }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [gameState, setGameState] = useState<GameState>({
     board: createInitialBoard(),
-    currentPlayer: 'black',
+    currentPlayer: 'black', // Start with AI's turn
     selectedPiece: null,
     validMoves: [],
     gameOver: false,
     winner: null
   });
+
+  // Effect for AI moves
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (gameState.currentPlayer === 'black' && !gameState.gameOver) {
+      // Add a small delay before AI move
+      timeoutId = setTimeout(() => {
+        const aiMove = getBestMove(gameState.board);
+        if (aiMove) {
+          makeMove(aiMove.to, aiMove.from);
+        }
+      }, 500); // 500ms delay
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [gameState.currentPlayer, gameState.gameOver]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -44,13 +66,13 @@ const CheckersGame: React.FC<CheckersGameProps> = ({ onGoBack }) => {
 
   const handleClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
-    if (!canvas || gameState.gameOver) return;
+    if (!canvas || gameState.gameOver || gameState.currentPlayer === 'black') return;
 
     const clickedPosition = getClickedPosition(event, canvas);
     const clickedPiece = gameState.board[clickedPosition.row][clickedPosition.col];
 
     // If no piece is selected and clicked on own piece, select it
-    if (!gameState.selectedPiece && clickedPiece?.player === gameState.currentPlayer) {
+    if (!gameState.selectedPiece && clickedPiece?.player === 'white') {
       const validMoves = getValidMoves(gameState.board, clickedPosition);
       setGameState(prev => ({
         ...prev,
@@ -105,26 +127,27 @@ const CheckersGame: React.FC<CheckersGameProps> = ({ onGoBack }) => {
     return { gameOver: false, winner: null };
   };
 
-  const makeMove = (newPosition: Position) => {
-    if (!gameState.selectedPiece) return;
+  const makeMove = (newPosition: Position, fromPosition?: Position) => {
+    const selectedPiece = fromPosition || gameState.selectedPiece;
+    if (!selectedPiece) return;
 
     const newBoard = gameState.board.map(row => [...row]);
-    const piece = newBoard[gameState.selectedPiece.row][gameState.selectedPiece.col];
+    const piece = newBoard[selectedPiece.row][selectedPiece.col];
     
     if (!piece) return;
 
     // Move piece
-    newBoard[gameState.selectedPiece.row][gameState.selectedPiece.col] = null;
+    newBoard[selectedPiece.row][selectedPiece.col] = null;
     newBoard[newPosition.row][newPosition.col] = {
       ...piece,
       type: shouldPromoteToKing(newPosition, piece.player) ? 'king' : piece.type
     };
 
     // Remove jumped piece if it was a jump move
-    const rowDiff = Math.abs(newPosition.row - gameState.selectedPiece.row);
+    const rowDiff = Math.abs(newPosition.row - selectedPiece.row);
     if (rowDiff === 2) {
-      const jumpedRow = (newPosition.row + gameState.selectedPiece.row) / 2;
-      const jumpedCol = (newPosition.col + gameState.selectedPiece.col) / 2;
+      const jumpedRow = (newPosition.row + selectedPiece.row) / 2;
+      const jumpedCol = (newPosition.col + selectedPiece.col) / 2;
       newBoard[jumpedRow][jumpedCol] = null;
     }
 
@@ -143,7 +166,7 @@ const CheckersGame: React.FC<CheckersGameProps> = ({ onGoBack }) => {
   const resetGame = () => {
     setGameState({
       board: createInitialBoard(),
-      currentPlayer: 'black',
+      currentPlayer: 'black', // Start with AI's turn
       selectedPiece: null,
       validMoves: [],
       gameOver: false,
@@ -161,7 +184,9 @@ const CheckersGame: React.FC<CheckersGameProps> = ({ onGoBack }) => {
         <div className="turn-indicator">
           {gameState.gameOver 
             ? `Game Over - ${gameState.winner} wins!`
-            : `${gameState.currentPlayer}'s turn`}
+            : gameState.currentPlayer === 'black' 
+              ? "AI is thinking..." 
+              : "Your turn"}
         </div>
         {gameState.gameOver && (
           <button className="reset-button" onClick={resetGame}>
