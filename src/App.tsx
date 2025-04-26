@@ -13,7 +13,7 @@ import LegendaryWave from './games/legendarywave/LegendaryWave';
 import './App.css';
 
 function App() {
-  const [selectedGameId, setSelectedGameId] = useState<string | null>('legendary-wave');
+  const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
   const [currentScreen, setCurrentScreen] = useState<'retro' | 'modern'>('retro');
 
   const handleSelectGame = (gameId: string) => {

@@ -188,16 +188,29 @@ const LegendaryWave: React.FC<LegendaryWaveProps> = ({ onGoBack }) => {
         </button>
       )}
       
-      <Canvas shadows camera={{ position: [15, 15, 15], fov: 50, near: 0.1, far: 100 }}>
+      <Canvas 
+        shadows 
+        camera={{ 
+          position: [20, 20, 20],
+          fov: 45,
+          near: 0.1,
+          far: 1000,
+          up: [0, 1, 0]
+        }}
+      >
         <color attach="background" args={['#111']} />
-        <fog attach="fog" args={['#111', 30, 50]} />
+        <fog attach="fog" args={['#111', 40, 60]} />
         
-        <ambientLight intensity={0.2} />
+        <ambientLight intensity={0.3} />
         <directionalLight
-          position={[10, 10, 5]}
-          intensity={1}
+          position={[15, 20, 15]}
+          intensity={1.2}
           castShadow
           shadow-mapSize={[2048, 2048]}
+          shadow-camera-left={-20}
+          shadow-camera-right={20}
+          shadow-camera-top={20}
+          shadow-camera-bottom={-20}
         />
         
         <Player state={gameState.player} />
@@ -210,8 +223,11 @@ const LegendaryWave: React.FC<LegendaryWaveProps> = ({ onGoBack }) => {
           target={[0, 0, 0]}
           enableZoom={false}
           enablePan={false}
-          maxPolarAngle={Math.PI / 2.5}
+          enableRotate={false}
+          maxPolarAngle={Math.PI / 3}
           minPolarAngle={Math.PI / 3}
+          maxAzimuthAngle={Math.PI / 4}
+          minAzimuthAngle={Math.PI / 4}
         />
       </Canvas>
 
