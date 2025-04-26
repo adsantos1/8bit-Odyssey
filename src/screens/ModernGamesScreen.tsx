@@ -5,14 +5,16 @@ interface ModernGamesScreenProps {
   onSelectGame: (gameId: string) => void;
 }
 
+interface ModernGame {
+  id: string;
+  name: string;
+  description: string;
+  free: boolean;
+}
+
 const ModernGamesScreen: React.FC<ModernGamesScreenProps> = ({ onSelectGame }) => {
-  const games = [
-    {
-      id: 'legendary-wave',
-      name: 'Legendary Wave',
-      description: 'An epic surfing adventure with stunning visuals and challenging gameplay.',
-      free: true
-    }
+  const games: ModernGame[] = [
+    // Add future modern games here
   ];
 
   return (

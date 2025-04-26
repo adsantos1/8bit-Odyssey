@@ -9,7 +9,6 @@ import TetrisGame from './games/tetris/TetrisGame';
 import SnakeGame from './games/snake/SnakeGame';
 import CheckersGame from './games/checkers/CheckersGame';
 import Menu from './components/Menu';
-import LegendaryWave from './games/legendarywave/LegendaryWave';
 import './App.css';
 
 function App() {
@@ -128,8 +127,6 @@ function App() {
         <SnakeGame onGoBack={handleGoBack} />
       ) : selectedGameId === 'checkers' ? (
         <CheckersGame onGoBack={handleGoBack} />
-      ) : selectedGameId === 'legendary-wave' ? (
-        <LegendaryWave onGoBack={handleGoBack} />
       ) : (
         <div>
           <p>Selected game: {selectedGameId} (Not implemented yet)</p>
