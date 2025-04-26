@@ -82,14 +82,14 @@
 .controls {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 15px; /* it was 8px before */
   align-items: center;
   margin-top: 10px;
 }
 
 .controls-row {
   display: flex;
-  gap: 10px;
+  gap: 20px;
   justify-content: center;
 }
 
